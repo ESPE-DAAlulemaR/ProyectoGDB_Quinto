@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Zonas')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1>Zonas</h1>
 @stop
 
 @section('content')
@@ -19,11 +19,17 @@
                     @csrf
                         <div class="form-group">
                             <label for="name">Nombre</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ isset($zone) ? $zone->name : old('name') }}">
+                            <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" name="name" value="{{ isset($zone) ? $zone->name : old('name') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('name') }}
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="extension">Extensión</label>
-                            <input type="text" class="form-control" id="extension" name="extension" value="{{ isset($zone) ? $zone->extension : old('extension') }}">
+                            <input type="text" class="form-control{{ $errors->has('extension') ? ' is-invalid' : '' }}" id="extension" name="extension" value="{{ isset($zone) ? $zone->extension : old('extension') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('extension') }}
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
                     </form>

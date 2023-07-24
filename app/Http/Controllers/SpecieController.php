@@ -41,10 +41,9 @@ class SpecieController extends Controller
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
-            'name' => 'required|max:50',
-            'scientific_name' => 'required|max:50',
-            'gender' => 'required|max:50',
-            'prueba' => 'required|max:45'
+            'name' => 'required|max:50|alpha',
+            'scientific_name' => 'required|max:50|alpha',
+            'gender' => 'required|max:50|alpha'
         ]);
 
         Specie::create($request->all());
@@ -83,7 +82,7 @@ class SpecieController extends Controller
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
-            'name' => 'required|max:50',
+            'name' => 'required|max:50|alpha',
             'scientific_name' => 'required|max:50',
             'gender' => 'required|max:50',
             'prueba' => 'required|max:45'

@@ -30,10 +30,10 @@ class HabitatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:30',
+            'name' => 'required|max:30|alpha',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
-            'continent' => 'required|max:30',
+            'contient' => 'required|max:30',
         ]);
 
         Habitat::create($request->all());
@@ -64,10 +64,10 @@ class HabitatController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'name' => 'required|max:30',
+            'name' => 'required|max:30|alpha',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
-            'continent' => 'required|max:30',
+            'contient' => 'required|max:30',
         ]);
 
         $habitat = Habitat::findOrFail($id);

@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Habitats')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1>Habitats</h1>
 @stop
 
 @section('content')
@@ -28,23 +28,35 @@
                     @csrf
                     <div class="form-group">
                         <label for="name">Nombre</label>
-                        <input type="text" class="form-control" id="name" name="name"
+                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" name="name"
                             value="{{ isset($habitat) ? $habitat->name : old('name') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('name') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="climate">Clima</label>
-                        <input type="text" class="form-control" id="climate" name="climate"
+                        <input type="text" class="form-control{{ $errors->has('climate') ? ' is-invalid' : '' }}" id="climate" name="climate"
                             value="{{ isset($habitat) ? $habitat->climate : old('climate') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('climate') }}
+                            </div>
                     </div>
                     <div class="form-group">
-                        <label for="continent">Continente</label>
-                        <input type="text" class="form-control" id="continent" name="continent"
-                            value="{{ isset($habitat) ? $habitat->continent : old('continent') }}">
+                        <label for="contient">Continente</label>
+                        <input type="text" class="form-control{{ $errors->has('contient') ? ' is-invalid' : '' }}" id="contient" name="contient"
+                            value="{{ isset($habitat) ? $habitat->contient : old('contient') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('contient') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="vegetation">Vegetación</label>
-                        <input type="text" class="form-control" id="vegetation" name="vegetation"
+                        <input type="text" class="form-control{{ $errors->has('vegetation') ? ' is-invalid' : '' }}" id="vegetation" name="vegetation"
                             value="{{ isset($habitat) ? $habitat->vegetation : old('vegetation') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('vegetation') }}
+                            </div>
                     </div>
                     <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
                     </form>

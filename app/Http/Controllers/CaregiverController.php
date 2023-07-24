@@ -30,9 +30,9 @@ class CaregiverController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:30',
+            'name' => 'required|max:30|alpha',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|numeric',
             'start_date' => 'required|date',
         ]);
 
@@ -64,9 +64,9 @@ class CaregiverController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'name' => 'required|max:30',
+            'name' => 'required|max:30|alpha',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|numeric',
             'start_date' => 'required|date',
         ]);
 

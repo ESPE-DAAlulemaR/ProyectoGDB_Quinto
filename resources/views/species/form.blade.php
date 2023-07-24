@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Especies')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1>Especies</h1>
 @stop
 
 @section('content')
@@ -28,7 +28,7 @@
                     @csrf
                     <div class="form-group">
                         <label for="caregiver_id">Cuidador</label>
-                        <select class="form-control" name="caregiver_id" id="caregiver_id"
+                        <select class="form-control{{ $errors->has('caregiver_id') ? ' is-invalid' : '' }}" name="caregiver_id" id="caregiver_id"
                             value="{{ isset($specie) ? $specie->caregiver_id : old('caregiver_id') }}">
                             @if (!isset($specie))
                                 <option selected>Seleccione...</option>
@@ -37,10 +37,13 @@
                                 <option value="{{ $caregiver->id }}">{{ $caregiver->name }}</option>
                             @endforeach
                         </select>
+                        <div class="invalid-feedback">
+                            {{ $errors->first('caregiver_id') }}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="habitat_id">Habitats</label>
-                        <select class="form-control" name="habitat_id" id="habitat_id"
+                        <select class="form-control{{ $errors->has('habitat_id') ? ' is-invalid' : '' }}" name="habitat_id" id="habitat_id"
                             value="{{ isset($habitat_id) ? $specie->habitat_id : old('habitat_id') }}">
                             @if (!isset($specie))
                                 <option selected>Seleccione...</option>
@@ -49,10 +52,13 @@
                                 <option value="{{ $habitat->id }}">{{ $habitat->name }}</option>
                             @endforeach
                         </select>
+                        <div class="invalid-feedback">
+                            {{ $errors->first('habitat_id') }}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="zone_id">Zona</label>
-                        <select class="form-control" name="zone_id" id="zone_id"
+                        <select class="form-control{{ $errors->has('zone_id') ? ' is-invalid' : '' }}" name="zone_id" id="zone_id"
                             value="{{ isset($specie) ? $specie->zone_id : old('zone_id') }}">
                             @if (!isset($specie))
                                 <option selected>Seleccione...</option>
@@ -61,21 +67,33 @@
                                 <option value="{{ $zone->id }}">{{ $zone->name }}</option>
                             @endforeach
                         </select>
+                        <div class="invalid-feedback">
+                            {{ $errors->first('zone_id') }}
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="name">Nombre</label>
-                        <input type="text" class="form-control" id="name" name="name"
+                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" name="name"
                             value="{{ isset($specie) ? $specie->name : old('name') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('name') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="scientific_name">Nombre Científico</label>
-                        <input type="text" class="form-control" id="scientific_name" name="scientific_name"
+                        <input type="text" class="form-control{{ $errors->has('scientific_name') ? ' is-invalid' : '' }}" id="scientific_name" name="scientific_name"
                             value="{{ isset($specie) ? $specie->scientific_name : old('scientific_name') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('scientific_name') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="gender">Género</label>
-                        <input type="text" class="form-control" id="gender" name="gender"
+                        <input type="text" class="form-control{{ $errors->has('gender') ? ' is-invalid' : '' }}" id="gender" name="gender"
                             value="{{ isset($specie) ? $specie->gender : old('gender') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('gender') }}
+                            </div>
                     </div>
                     <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
                     </form>

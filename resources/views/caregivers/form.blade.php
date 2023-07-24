@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Cuidadores')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1>Cuidadores</h1>
 @stop
 
 @section('content')
@@ -31,23 +31,35 @@
                     @csrf
                     <div class="form-group">
                         <label for="name">Nombre</label>
-                        <input type="text" class="form-control" id="name" name="name"
+                        <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" id="name" name="name"
                             value="{{ isset($caregiver) ? $caregiver->name : old('name') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('name') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="address">Direccion</label>
-                        <input type="text" class="form-control" id="address" name="address"
+                        <input type="text" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" id="address" name="address"
                             value="{{ isset($caregiver) ? $caregiver->address : old('address') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('address') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="phone">Número telefónico</label>
-                        <input type="text" class="form-control" id="phone" name="phone"
+                        <input type="text" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" id="phone" name="phone"
                             value="{{ isset($caregiver) ? $caregiver->phone : old('phone') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('phone') }}
+                            </div>
                     </div>
                     <div class="form-group">
                         <label for="start_date">Fecha de Inicio</label>
-                        <input type="date" class="form-control" id="start_date" name="start_date"
+                        <input type="date" class="form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" id="start_date" name="start_date"
                             value="{{ isset($caregiver) ? $caregiver->start_date : old('start_date') }}">
+                            <div class="invalid-feedback">
+                                {{ $errors->first('start_date') }}
+                            </div>
                     </div>
                     <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
                     </form>
