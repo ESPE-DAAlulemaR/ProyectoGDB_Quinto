@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caregiver;
+use App\Models\Zoo;
 use Illuminate\Http\Request;
 
 class CaregiverController extends Controller
@@ -12,7 +13,7 @@ class CaregiverController extends Controller
      */
     public function index()
     {
-        $caregivers = Caregiver::all();
+        $caregivers = Caregiver::with('zoo')->where('zoo_id', session('zooArr')['id'])->get();
         return view('caregivers.index', compact('caregivers'));
     }
 
@@ -29,14 +30,15 @@ class CaregiverController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30|alpha',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10|numeric',
+            'phone' => 'required|max:10',
             'start_date' => 'required|date',
         ]);
 
-        Caregiver::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
+        Caregiver::create($validated);
 
         return redirect()->route('caregivers.index')->with([ 'message' => 'Cuidador registrada satisfactoriamente', 'type' => 'success' ]);
     }

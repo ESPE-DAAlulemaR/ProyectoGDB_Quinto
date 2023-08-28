@@ -3,7 +3,10 @@
 @section('title', 'Habitats')
 
 @section('content_header')
-    <h1>Habitats</h1>
+    <div class="d-flex justify-content-between">
+        <h1>Habitats</h1>
+        <h5>{{ session('zooArr')['name'] }}</h5>
+    </div>
 @stop
 
 @section('content')
@@ -43,11 +46,11 @@
                             </div>
                     </div>
                     <div class="form-group">
-                        <label for="contient">Continente</label>
-                        <input type="text" class="form-control{{ $errors->has('contient') ? ' is-invalid' : '' }}" id="contient" name="contient"
-                            value="{{ isset($habitat) ? $habitat->contient : old('contient') }}">
+                        <label for="continent">Continente</label>
+                        <input type="text" class="form-control{{ $errors->has('continent') ? ' is-invalid' : '' }}" id="continent" name="continent"
+                            value="{{ isset($habitat) ? $habitat->continent : old('continent') }}">
                             <div class="invalid-feedback">
-                                {{ $errors->first('contient') }}
+                                {{ $errors->first('continent') }}
                             </div>
                     </div>
                     <div class="form-group">

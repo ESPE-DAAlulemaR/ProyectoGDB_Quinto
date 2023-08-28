@@ -15,7 +15,7 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        $itineraries = DB::table('vw_itineraries')->get();
+        $itineraries = Itinerary::getItineraries(session('zooArr')['numeric_code']);
         return view('itineraries.index', compact('itineraries'));
     }
 
@@ -24,8 +24,8 @@ class ItineraryController extends Controller
      */
     public function create()
     {
-        $zones = Zone::all();
-        $guides = Guide::all();
+        $zones = Zone::where('zoo_id', session('zooArr')['id'])->get();
+        $guides = Guide::where('zoo_id', session('zooArr')['id'])->get();
 
         return view('itineraries.form', compact('zones', 'guides'));
     }
@@ -35,7 +35,7 @@ class ItineraryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'guide_id' => 'required|int',
             'zone_id' => 'required|int',
             'duration' => 'required|max:50',
@@ -43,9 +43,11 @@ class ItineraryController extends Controller
             'start_time' => 'required',
         ]);
 
-        Itinerary::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
 
-        return redirect()->route('itineraries.index')->with([ 'message' => 'Guia registrada satisfactoriamente', 'type' => 'success' ]);
+        DB::table('itineraries')->insert($validated);
+
+        return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario registrado satisfactoriamente', 'type' => 'success' ]);
     }
 
     /**
@@ -53,7 +55,7 @@ class ItineraryController extends Controller
      */
     public function show(int $id)
     {
-        return Itinerary::find($id);
+        return Itinerary::getItinerary(session('zooArr')['numeric_code'], $id);
     }
 
     /**
@@ -61,10 +63,10 @@ class ItineraryController extends Controller
      */
     public function edit(int $id)
     {
-        $itinerary = Itinerary::find($id);
+        $itinerary = Itinerary::getItinerary(session('zooArr')['numeric_code'], $id);
 
-        $zones = Zone::all();
-        $guides = Guide::all();
+        $zones = Zone::where('zoo_id', session('zooArr')['id'])->get();
+        $guides = Guide::where('zoo_id', session('zooArr')['id'])->get();
         return view('itineraries.form', compact('itinerary', 'zones', 'guides'));
     }
 
@@ -73,7 +75,7 @@ class ItineraryController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'guide_id' => 'required|int',
             'zone_id' => 'required|int',
             'duration' => 'required|max:50',
@@ -81,15 +83,12 @@ class ItineraryController extends Controller
             'start_time' => 'required',
         ]);
 
-        $itinerary = Itinerary::find($id);
+        $validated['zoo_id'] = session('zooArr')['id'];
+        $validated['id'] = $id;
 
-        $itinerary->fill($request->all());
-        if ($itinerary->isClean())
-            return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
+        Itinerary::updateItinerary(session('zooArr'), $validated);
 
-        $itinerary->save();
-
-        return redirect()->route('itineraries.index')->with([ 'message' => 'Zona actualizada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario actualizada satisfactoriamente', 'type' => 'success' ]);
     }
 
     /**
@@ -97,9 +96,8 @@ class ItineraryController extends Controller
      */
     public function destroy(int $id)
     {
-        $itinerary = Itinerary::find($id);
-        $itinerary->delete();
+        Itinerary::deleteItinerary(session('zooArr'), $id);
 
-        return view('itineraries.index', compact('itinerary'))->with([ 'message' => 'Zona eliminada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario eliminado satisfactoriamente', 'type' => 'success' ]);
     }
 }

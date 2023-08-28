@@ -3,7 +3,10 @@
 @section('title', 'Cuidadores')
 
 @section('content_header')
-    <h1>Cuidadores</h1>
+    <div class="d-flex justify-content-between">
+        <h1>Cuidadores</h1>
+        <h5>{{ session('zooArr')['name'] }}</h5>
+    </div>
 @stop
 
 @section('content')

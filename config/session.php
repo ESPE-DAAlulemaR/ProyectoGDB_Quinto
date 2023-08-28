@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Zoo;
 use Illuminate\Support\Str;
 
 return [

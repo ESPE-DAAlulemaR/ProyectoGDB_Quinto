@@ -16,7 +16,8 @@ class SpecieController extends Controller
      */
     public function index()
     {
-        $species = DB::table('vw_species')->get();
+        $species = DB::select('SELECT * FROM vw_species WHERE zoo_id = ?', [session('zooArr')['id']]);
+
         return view('species.index', compact('species'));
     }
 
@@ -25,9 +26,9 @@ class SpecieController extends Controller
      */
     public function create()
     {
-        $zones = Zone::all();
-        $caregivers = Caregiver::all();
-        $habitats = Habitat::all();
+        $zones = Zone::where('zoo_id', session('zooArr')['id'])->get();
+        $caregivers = Caregiver::where('zoo_id', session('zooArr')['id'])->get();
+        $habitats = Habitat::where('zoo_id', session('zooArr')['id'])->get();
 
         return view('species.form', compact('zones', 'caregivers', 'habitats'));
     }
@@ -37,7 +38,7 @@ class SpecieController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
@@ -46,9 +47,19 @@ class SpecieController extends Controller
             'gender' => 'required|max:50|alpha'
         ]);
 
-        Specie::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
 
-        return redirect()->route('species.index')->with([ 'message' => 'Guia registrada satisfactoriamente', 'type' => 'success' ]);
+        DB::select('SELECT * FROM insert_species_and_info(?, ?, ?, ?, ?, ?, ?)', [
+            $validated['zone_id'],
+            $validated['zoo_id'],
+            $validated['name'],
+            $validated['scientific_name'],
+            $validated['gender'],
+            $validated['caregiver_id'],
+            $validated['habitat_id'],
+        ]);
+
+        return redirect()->route('species.index')->with(['message' => 'Especie registrada satisfactoriamente', 'type' => 'success']);
     }
 
     /**
@@ -66,9 +77,9 @@ class SpecieController extends Controller
     {
         $specie = Specie::find($id);
 
-        $zones = Zone::all();
-        $caregivers = Caregiver::all();
-        $habitats = Habitat::all();
+        $zones = Zone::where('zoo_id', session('zooArr')['id'])->get();
+        $caregivers = Caregiver::where('zoo_id', session('zooArr')['id'])->get();
+        $habitats = Habitat::where('zoo_id', session('zooArr')['id'])->get();
 
         return view('species.form', compact('specie', 'zones', 'caregivers', 'habitats'));
     }
@@ -78,25 +89,29 @@ class SpecieController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
             'name' => 'required|max:50|alpha',
             'scientific_name' => 'required|max:50',
-            'gender' => 'required|max:50',
-            'prueba' => 'required|max:45'
+            'gender' => 'required|max:50'
         ]);
 
-        $itinerary = Specie::find($id);
+        $validated['zoo_id'] = session('zooArr')['id'];
 
-        $itinerary->fill($request->all());
-        if ($itinerary->isClean())
-            return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
+        DB::select('SELECT * FROM update_species_and_info(?, ?, ?, ?, ?, ?, ?, ?)', [
+            $id,
+            $validated['zone_id'],
+            $validated['zoo_id'],
+            $validated['name'],
+            $validated['scientific_name'],
+            $validated['gender'],
+            $validated['caregiver_id'],
+            $validated['habitat_id'],
+        ]);
 
-        $itinerary->save();
-
-        return redirect()->route('species.index')->with([ 'message' => 'Especie actualizada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->route('species.index')->with(['message' => 'Especie actualizada satisfactoriamente', 'type' => 'success']);
     }
 
     /**
@@ -104,9 +119,57 @@ class SpecieController extends Controller
      */
     public function destroy(int $id)
     {
-        $specie = Specie::find($id);
-        $specie->delete();
+        DB::select('SELECT * FROM delete_species_and_info(?)', [$id]);
 
-        return redirect()->back()->with([ 'message' => 'Especie eliminada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->back()->with(['message' => 'Especie eliminada satisfactoriamente', 'type' => 'success']);
+    }
+
+    function storeWithCaregiver(Request $request)
+    {
+        session([
+            'whithCaregiver' => true
+        ]);
+
+        $validated = $request->validate([
+            // Especie
+            'zone_id' => 'required|int',
+            'habitat_id' => 'required|int',
+            'name' => 'required|max:50|alpha',
+            'scientific_name' => 'required|max:50|alpha',
+            'gender' => 'required|max:50|alpha',
+
+            // Cuidador
+            'caregiver_name' => 'required|max:30|alpha',
+            'address' => 'required|max:50',
+            'phone' => 'required|max:10',
+            'start_date' => 'required|date',
+        ]);
+
+        $validated['zoo_id'] = session('zooArr')['id'];
+
+        $result1 = DB::select('SELECT * FROM insert_caregiver_and_species(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+            // Pametros para especie
+            $validated['habitat_id'],
+            $validated['zone_id'],
+            $validated['zoo_id'],
+            $validated['name'],
+            $validated['scientific_name'],
+            $validated['gender'],
+
+            // Parametros para Cuidador
+            $validated['caregiver_name'],
+            $validated['address'],
+            $validated['phone'],
+            $validated['start_date'],
+        ])[0];
+
+        // Llamar a la función insert_species_additional_info para insertar información adicional de la especie
+        DB::select('SELECT insert_species_additional_info(?, ?, ?)', [
+            $result1->species_id, // species_id
+            $result1->caregiver_id, // caregiver_id
+            $validated['habitat_id'],
+        ]);
+
+        return redirect()->route('species.index')->with(['message' => 'Especie y cuidador registrados satisfactoriamente', 'type' => 'success']);
     }
 }

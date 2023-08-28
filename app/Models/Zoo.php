@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Guide extends Model
+class Zoo extends Model
 {
     use HasFactory;
 
@@ -13,15 +13,8 @@ class Guide extends Model
 
     protected $fillable = [
         'name',
-        'address',
-        'phone',
-        'email',
-        'start_date',
-        'zoo_id'
+        'code',
+        'numeric_code',
+        'master'
     ];
-
-    function zoo()
-    {
-        return $this->belongsTo(Zoo::class);
-    }
 }

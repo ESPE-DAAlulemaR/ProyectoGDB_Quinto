@@ -15,6 +15,12 @@ class Caregiver extends Model
         'name',
         'address',
         'phone',
-        'start_date'
+        'start_date',
+        'zoo_id'
     ];
+
+    function zoo()
+    {
+        return $this->belongsTo(Zoo::class);
+    }
 }

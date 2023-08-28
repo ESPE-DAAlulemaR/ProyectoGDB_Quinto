@@ -12,7 +12,7 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        $zones = Zone::all();
+        $zones = Zone::with('zoo')->where('zoo_id', session('zooArr')['id'])->get();
         return view('zones.index', compact('zones'));
     }
 
@@ -29,12 +29,14 @@ class ZoneController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30',
             'extension' => 'required|max:30',
         ]);
 
-        Zone::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
+
+        Zone::create($validated);
 
         return redirect()->route('zones.index')->with([ 'message' => 'Zona registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -61,14 +63,15 @@ class ZoneController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30',
             'extension' => 'required|max:30',
         ]);
 
+        $validated['zoo_id'] = session('zooArr')['id'];
         $zone = Zone::findOrFail($id);
 
-        $zone->fill($request->all());
+        $zone->fill($validated);
         if ($zone->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 

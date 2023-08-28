@@ -12,7 +12,7 @@ class GuideController extends Controller
      */
     public function index()
     {
-        $guides = Guide::all();
+        $guides = Guide::with('zoo')->where('zoo_id', session('zooArr')['id'])->get();
         return view('guides.index', compact('guides'));
     }
 
@@ -29,17 +29,19 @@ class GuideController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30|alpha',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10|numeric',
+            'phone' => 'required|max:10',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);
 
-        Guide::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
 
-        return redirect()->route('guides.index')->with([ 'message' => 'Guia registrada satisfactoriamente', 'type' => 'success' ]);
+        Guide::create($validated);
+
+        return redirect()->route('guides.index')->with([ 'message' => 'Guía registrada satisfactoriamente', 'type' => 'success' ]);
     }
 
     /**
@@ -64,23 +66,25 @@ class GuideController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30|alpha',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10|numeric',
+            'phone' => 'required|max:10',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);
 
+        $validated['zoo_id'] = session('zooArr')['id'];
+
         $guide = Guide::find($id);
 
-        $guide->fill($request->all());
+        $guide->fill($validated);
         if ($guide->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 
         $guide->save();
 
-        return redirect()->route('guides.index')->with([ 'message' => 'Zona actualizada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->route('guides.index')->with([ 'message' => 'Guía actualizada satisfactoriamente', 'type' => 'success' ]);
     }
 
     /**
@@ -91,6 +95,6 @@ class GuideController extends Controller
         $guide = Guide::find($id);
         $guide->delete();
 
-        return view('guides.index', compact('guide'))->with([ 'message' => 'Zona eliminada satisfactoriamente', 'type' => 'success' ]);
+        return redirect()->route('guides.index')->with(['message' => 'Guía eliminado satisfactoriamente', 'type' => 'success']);
     }
 }

@@ -12,7 +12,7 @@ class HabitatController extends Controller
      */
     public function index()
     {
-        $habitats = Habitat::all();
+        $habitats = Habitat::with('zoo')->where('zoo_id', session('zooArr')['id'])->get();
         return view('habitats.index', compact('habitats'));
     }
 
@@ -29,14 +29,16 @@ class HabitatController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30|alpha',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
-            'contient' => 'required|max:30',
+            'continent' => 'required|max:30',
         ]);
 
-        Habitat::create($request->all());
+        $validated['zoo_id'] = session('zooArr')['id'];
+
+        Habitat::create($validated);
 
         return redirect()->route('habitats.index')->with([ 'message' => 'Habitat registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -63,16 +65,18 @@ class HabitatController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:30|alpha',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
-            'contient' => 'required|max:30',
+            'continent' => 'required|max:30',
         ]);
+
+        $validated['zoo_id'] = session('zooArr')['id'];
 
         $habitat = Habitat::findOrFail($id);
 
-        $habitat->fill($request->all());
+        $habitat->fill($validated);
         if ($habitat->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 

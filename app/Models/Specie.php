@@ -18,6 +18,12 @@ class Specie extends Model
         'name',
         'scientific_name',
         'gender',
-        'prueba'
+        'prueba',
+        'zoo_id'
     ];
+
+    function zoo()
+    {
+        return $this->belongsTo(Zoo::class);
+    }
 }

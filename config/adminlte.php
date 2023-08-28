@@ -192,7 +192,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-success elevation-4',
+    'classes_sidebar' => 'sidebar-dark-success elevation-4 custom-aside',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
@@ -449,6 +449,16 @@ return [
                 ]
             ]
         ],
+        'AppJS' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'assets/js/app.js'
+                ]
+            ]
+        ],
     ],
 
     /*
@@ -496,5 +506,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];

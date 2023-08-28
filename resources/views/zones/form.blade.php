@@ -3,7 +3,10 @@
 @section('title', 'Zonas')
 
 @section('content_header')
-    <h1>Zonas</h1>
+    <div class="d-flex justify-content-between">
+        <h1>Zonas</h1>
+        <h5>{{ session('zooArr')['name'] }}</h5>
+    </div>
 @stop
 
 @section('content')
@@ -11,6 +14,15 @@
         <div class="row">
             <div class="col-12">
                 <div class="card p-3">
+                    @if (session('message'))
+                        <div class="alert alert-{{ session('type') }} alert-dismissible fade show" role="alert">
+                            <p>{{ session('message') }}</p>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        @php session()->forget([ 'message', 'type' ]); @endphp
+                    @endif
                     @if (!isset($zone))
                         <form action="{{ route('zones.store') }}" method="POST">
                     @else

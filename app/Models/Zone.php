@@ -13,6 +13,12 @@ class Zone extends Model
 
     protected $fillable = [
         'name',
-        'extension'
+        'extension',
+        'zoo_id'
     ];
+
+    function zoo()
+    {
+        return $this->belongsTo(Zoo::class);
+    }
 }

@@ -15,6 +15,12 @@ class Habitat extends Model
         'name',
         'climate',
         'vegetation',
-        'continent'
+        'continent',
+        'zoo_id'
     ];
+
+    function zoo()
+    {
+        return $this->belongsTo(Zoo::class);
+    }
 }

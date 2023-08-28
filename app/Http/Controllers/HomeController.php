@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Zoo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return redirect()->route('welcome');
+        if (config('app.zoo') != 'uio')
+            session([
+                'zooArr' => Zoo::where('code', config('app.zoo'))->first()->toArray()
+            ]);
+
+        $zoo = Zoo::where('code', config('app.zoo'))->first()->toArray();
+
+        return view('welcome', compact('zoo'));
     }
 }
