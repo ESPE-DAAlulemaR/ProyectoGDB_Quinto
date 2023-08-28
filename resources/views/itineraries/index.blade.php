@@ -51,7 +51,8 @@
                                         <td>{{ $itinerary->start_time }}</td>
                                         <td>
                                             <div class="d-flex justify-content-around">
-                                                <a href="{{ route('itineraries.edit', ['itinerary' => $itinerary->id]) }}"
+                                                <span>...</span>
+                                                {{--<a href="{{ route('itineraries.edit', ['itinerary' => $itinerary->id]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
@@ -60,7 +61,7 @@
                                                     <button type="submit" class="btn btn-danger btn-sm">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                {!! Form::close() !!}
+                                                {!! Form::close() !!}--}}
                                             </div>
                                         </td>
                                     </tr>

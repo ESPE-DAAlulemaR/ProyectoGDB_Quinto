@@ -86,7 +86,7 @@ class ItineraryController extends Controller
         $validated['zoo_id'] = session('zooArr')['id'];
         $validated['id'] = $id;
 
-        Itinerary::updateItinerary(session('zooArr'), $validated);
+        Itinerary::updateItinerary(session('zooArr')['numeric_code'], $validated);
 
         return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario actualizada satisfactoriamente', 'type' => 'success' ]);
     }
