@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\DB;
 class ItineraryController extends Controller
 {
     /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Itinerary $service) {
+        $this->service = $service;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -45,7 +55,7 @@ class ItineraryController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        DB::table('itineraries')->insert($validated);
+        $this->service->createItem($validated);
 
         return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario registrado satisfactoriamente', 'type' => 'success' ]);
     }
@@ -84,11 +94,13 @@ class ItineraryController extends Controller
         ]);
 
         $validated['zoo_id'] = session('zooArr')['id'];
-        $validated['id'] = $id;
+        $validated['zoo_numeric_code'] = session('zooArr')['numeric_code'];
 
-        Itinerary::updateItinerary(session('zooArr'), $validated);
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario actualizada satisfactoriamente', 'type' => 'success' ]);
+
+
     }
 
     /**
@@ -96,7 +108,9 @@ class ItineraryController extends Controller
      */
     public function destroy(int $id)
     {
-        Itinerary::deleteItinerary(session('zooArr'), $id);
+        $this->service->deleteItem([
+            'zoo_numeric_code' => session('zooArr')['numeric_code']
+        ], $id);
 
         return redirect()->route('itineraries.index')->with([ 'message' => 'Itinerario eliminado satisfactoriamente', 'type' => 'success' ]);
     }

@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class ZoneController extends Controller
 {
     /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Zone $service) {
+        $this->service = $service;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -36,7 +46,7 @@ class ZoneController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        Zone::create($validated);
+        $this->service->createItem($validated);
 
         return redirect()->route('zones.index')->with([ 'message' => 'Zona registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -69,13 +79,14 @@ class ZoneController extends Controller
         ]);
 
         $validated['zoo_id'] = session('zooArr')['id'];
+
         $zone = Zone::findOrFail($id);
 
-        $zone->fill($validated);
+        $zone->fill($request->all());
         if ($zone->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 
-        $zone->save();
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('zones.index')->with([ 'message' => 'Zona actualizada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -85,9 +96,7 @@ class ZoneController extends Controller
      */
     public function destroy(int $id)
     {
-        $zone = Zone::findOrFail($id);
-        $zone->delete();
-
+        $this->service->deleteItem([], $id);
         return redirect()->route('zones.index')->with([ 'message' => 'Zona eliminada satisfactoriamente', 'type' => 'success' ]);
     }
 }

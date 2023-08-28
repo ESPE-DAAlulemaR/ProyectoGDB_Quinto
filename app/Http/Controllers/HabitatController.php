@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class HabitatController extends Controller
 {
     /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Habitat $service) {
+        $this->service = $service;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -30,7 +40,7 @@ class HabitatController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
             'continent' => 'required|max:30',
@@ -38,7 +48,7 @@ class HabitatController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        Habitat::create($validated);
+        $this->service->createItem($validated);
 
         return redirect()->route('habitats.index')->with([ 'message' => 'Habitat registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -66,7 +76,7 @@ class HabitatController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
             'continent' => 'required|max:30',
@@ -80,7 +90,7 @@ class HabitatController extends Controller
         if ($habitat->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 
-        $habitat->save();
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('habitats.index')->with([ 'message' => 'Habitat actualizada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -90,8 +100,7 @@ class HabitatController extends Controller
      */
     public function destroy(int $id)
     {
-        $habitat = Habitat::findOrFail($id);
-        $habitat->delete();
+        $this->service->deleteItem([], $id);
 
         return redirect()->route('habitats.index')->with([ 'message' => 'Habitat eliminada satisfactoriamente', 'type' => 'success' ]);
     }

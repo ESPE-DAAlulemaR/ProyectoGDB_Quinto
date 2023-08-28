@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class GuideController extends Controller
 {
     /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Guide $service) {
+        $this->service = $service;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -30,16 +40,16 @@ class GuideController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        Guide::create($validated);
+        $this->service->createItem($validated);
 
         return redirect()->route('guides.index')->with([ 'message' => 'Guía registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -67,9 +77,9 @@ class GuideController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);
@@ -82,7 +92,7 @@ class GuideController extends Controller
         if ($guide->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 
-        $guide->save();
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('guides.index')->with([ 'message' => 'Guía actualizada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -92,8 +102,7 @@ class GuideController extends Controller
      */
     public function destroy(int $id)
     {
-        $guide = Guide::find($id);
-        $guide->delete();
+        $this->service->deleteItem([], $id);
 
         return redirect()->route('guides.index')->with(['message' => 'Guía eliminado satisfactoriamente', 'type' => 'success']);
     }

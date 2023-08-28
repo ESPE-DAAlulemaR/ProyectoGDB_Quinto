@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\DB;
 
 class SpecieController extends Controller
 {
+
+    public \App\Http\Services\Rest\Entities\Specie $myService;
+
+    /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Specie $myService) {
+        $this->myService = $myService;
+        $this->service = $myService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -49,15 +63,7 @@ class SpecieController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        DB::select('SELECT * FROM insert_species_and_info(?, ?, ?, ?, ?, ?, ?)', [
-            $validated['zone_id'],
-            $validated['zoo_id'],
-            $validated['name'],
-            $validated['scientific_name'],
-            $validated['gender'],
-            $validated['caregiver_id'],
-            $validated['habitat_id'],
-        ]);
+        $this->service->createItem($validated);
 
         return redirect()->route('species.index')->with(['message' => 'Especie registrada satisfactoriamente', 'type' => 'success']);
     }
@@ -100,16 +106,7 @@ class SpecieController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        DB::select('SELECT * FROM update_species_and_info(?, ?, ?, ?, ?, ?, ?, ?)', [
-            $id,
-            $validated['zone_id'],
-            $validated['zoo_id'],
-            $validated['name'],
-            $validated['scientific_name'],
-            $validated['gender'],
-            $validated['caregiver_id'],
-            $validated['habitat_id'],
-        ]);
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('species.index')->with(['message' => 'Especie actualizada satisfactoriamente', 'type' => 'success']);
     }
@@ -119,7 +116,7 @@ class SpecieController extends Controller
      */
     public function destroy(int $id)
     {
-        DB::select('SELECT * FROM delete_species_and_info(?)', [$id]);
+        $this->service->deleteItem([], $id);
 
         return redirect()->back()->with(['message' => 'Especie eliminada satisfactoriamente', 'type' => 'success']);
     }
@@ -147,28 +144,7 @@ class SpecieController extends Controller
 
         $validated['zoo_id'] = session('zooArr')['id'];
 
-        $result1 = DB::select('SELECT * FROM insert_caregiver_and_species(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-            // Pametros para especie
-            $validated['habitat_id'],
-            $validated['zone_id'],
-            $validated['zoo_id'],
-            $validated['name'],
-            $validated['scientific_name'],
-            $validated['gender'],
-
-            // Parametros para Cuidador
-            $validated['caregiver_name'],
-            $validated['address'],
-            $validated['phone'],
-            $validated['start_date'],
-        ])[0];
-
-        // Llamar a la función insert_species_additional_info para insertar información adicional de la especie
-        DB::select('SELECT insert_species_additional_info(?, ?, ?)', [
-            $result1->species_id, // species_id
-            $result1->caregiver_id, // caregiver_id
-            $validated['habitat_id'],
-        ]);
+        $this->myService->createSpecieWithCaregiver($validated);
 
         return redirect()->route('species.index')->with(['message' => 'Especie y cuidador registrados satisfactoriamente', 'type' => 'success']);
     }

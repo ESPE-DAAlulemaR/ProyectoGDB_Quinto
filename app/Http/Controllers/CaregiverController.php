@@ -3,11 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caregiver;
-use App\Models\Zoo;
 use Illuminate\Http\Request;
 
 class CaregiverController extends Controller
 {
+    /**
+     * Create a new entity service instance.
+     *
+     * @param  \App\Http\Services\Service $service
+     * @return void
+     */
+    public function __construct(\App\Http\Services\Rest\Entities\Caregiver $service) {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,14 +40,14 @@ class CaregiverController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'start_date' => 'required|date',
         ]);
 
         $validated['zoo_id'] = session('zooArr')['id'];
-        Caregiver::create($validated);
+        $this->service->createItem($validated);
 
         return redirect()->route('caregivers.index')->with([ 'message' => 'Cuidador registrada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -65,20 +74,22 @@ class CaregiverController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $request->validate([
-            'name' => 'required|max:30|alpha',
+        $validated = $request->validate([
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10|numeric',
+            'phone' => 'required|regex:/^09\d{8}$/',
             'start_date' => 'required|date',
         ]);
 
-        $caregiver = Caregiver::find($id);
+        $validated['zoo_id'] = session('zooArr')['id'];
+
+        $caregiver = Caregiver::findOrFail($id);
 
         $caregiver->fill($request->all());
         if ($caregiver->isClean())
             return redirect()->back()->with([ 'message' => 'Por lo menos un valor debe cambiar', 'type' => 'danger' ]);
 
-        $caregiver->save();
+        $this->service->editItem($validated, $id);
 
         return redirect()->route('caregivers.index')->with([ 'message' => 'Cuidador actualizada satisfactoriamente', 'type' => 'success' ]);
     }
@@ -88,8 +99,7 @@ class CaregiverController extends Controller
      */
     public function destroy(int $id)
     {
-        $caregiver = Caregiver::find($id);
-        $caregiver->delete();
+        $this->service->deleteItem([], $id);
 
         return redirect()->route('caregivers.index')->with([ 'message' => 'Cuidador eliminado satisfactoriamente', 'type' => 'success' ]);
     }
