@@ -28,7 +28,7 @@ class Itinerary extends Model
 
     public static function getItineraries($zooNumericCode)
     {
-        $table = 'itineraries_partitions_' . session('zooArr')['numeric_code'];
+        $table = 'itineraries_partitions_'.$zooNumericCode;
 
         return DB::table($table)
             ->select($table.'.id', 'guides.name AS guide', 'zones.name AS zone', $table.'.duration', $table.'.max_visitors', $table.'.start_time', $table.'.zoo_id')
@@ -39,7 +39,7 @@ class Itinerary extends Model
 
     public static function getItinerary($zooNumericCode, $id)
     {
-        $table = 'itineraries_partitions_' . session('zooArr')['numeric_code'];
+        $table = 'itineraries_partitions_'.$zooNumericCode;
 
         return DB::table($table)
             ->select($table.'.*', 'guides.name AS guide', 'zones.name AS zone')
@@ -51,7 +51,7 @@ class Itinerary extends Model
 
     public static function updateItinerary($zooNumericCode, $values)
     {
-        $table = 'itineraries_partitions_' . session('zooArr')['numeric_code'];
+        $table = 'itineraries_partitions_'.$zooNumericCode;
         $n = count($values);
         $counter = 0;
 
@@ -74,7 +74,7 @@ class Itinerary extends Model
 
     public static function deleteItinerary($zooNumericCode, $id)
     {
-        $table = 'itineraries_partitions_' . session('zooArr')['numeric_code'];
+        $table = 'itineraries_partitions_'.$zooNumericCode;
 
         return DB::delete('DELETE FROM '. $table .' WHERE id = ?', [ $id ]);
     }
