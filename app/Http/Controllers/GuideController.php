@@ -30,9 +30,9 @@ class GuideController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);
@@ -67,9 +67,9 @@ class GuideController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'email' => 'required|max:50|email',
             'start_date' => 'required|date',
         ]);

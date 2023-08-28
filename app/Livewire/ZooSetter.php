@@ -15,7 +15,7 @@ class ZooSetter extends Component
     }
 
     function mount() : void {
-        $this->zoos = Zoo::where('zoo_id', session('zooArr')['id'])->get();
+        $this->zoos = Zoo::all();
 
         $this->setZoo();
         $this->setZooInSession();

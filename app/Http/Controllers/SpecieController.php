@@ -42,9 +42,9 @@ class SpecieController extends Controller
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
-            'name' => 'required|max:50|alpha',
-            'scientific_name' => 'required|max:50|alpha',
-            'gender' => 'required|max:50|alpha'
+            'name' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
+            'scientific_name' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
+            'gender' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/'
         ]);
 
         $validated['zoo_id'] = session('zooArr')['id'];
@@ -93,7 +93,7 @@ class SpecieController extends Controller
             'caregiver_id' => 'required|int',
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
-            'name' => 'required|max:50|alpha',
+            'name' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
             'scientific_name' => 'required|max:50',
             'gender' => 'required|max:50'
         ]);
@@ -104,9 +104,9 @@ class SpecieController extends Controller
             $id,
             $validated['zone_id'],
             $validated['zoo_id'],
-            $validated['name'],
-            $validated['scientific_name'],
-            $validated['gender'],
+            "'".$validated['name']."'",
+            "'".$validated['scientific_name']."'",
+            "'".$validated['gender']."'",
             $validated['caregiver_id'],
             $validated['habitat_id'],
         ]);
@@ -134,14 +134,14 @@ class SpecieController extends Controller
             // Especie
             'zone_id' => 'required|int',
             'habitat_id' => 'required|int',
-            'name' => 'required|max:50|alpha',
-            'scientific_name' => 'required|max:50|alpha',
-            'gender' => 'required|max:50|alpha',
+            'name' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
+            'scientific_name' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
+            'gender' => 'required|max:50|regex:/^[a-zA-Z-\' ]+$/',
 
             // Cuidador
-            'caregiver_name' => 'required|max:30|alpha',
+            'caregiver_name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'address' => 'required|max:50',
-            'phone' => 'required|max:10',
+            'phone' => 'required|max:10|regex:/^09\d{8}$/',
             'start_date' => 'required|date',
         ]);
 

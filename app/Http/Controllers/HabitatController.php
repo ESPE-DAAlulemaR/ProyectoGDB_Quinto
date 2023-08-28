@@ -30,7 +30,7 @@ class HabitatController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
             'continent' => 'required|max:30',
@@ -66,7 +66,7 @@ class HabitatController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:30|alpha',
+            'name' => 'required|max:30|regex:/^[a-zA-Z-\' ]+$/',
             'climate' => 'required|max:30',
             'vegetation' => 'required|max:30',
             'continent' => 'required|max:30',

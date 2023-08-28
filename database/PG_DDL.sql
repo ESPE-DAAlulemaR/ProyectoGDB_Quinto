@@ -254,13 +254,13 @@ ALTER TABLE zones ADD CONSTRAINT FK_zones_zoos
 ;
 
 -- Partición Horizontal (Tabla itineraries por zoo_id):
-DROP TABLE IF EXISTS itineraries_partitions_1;
-DROP TABLE IF EXISTS itineraries_partitions_2;
-DROP TABLE IF EXISTS itineraries_partitions_3;
+DROP TABLE IF EXISTS itineraries_partitions_1 CASCADE;
+DROP TABLE IF EXISTS itineraries_partitions_2 CASCADE;
+DROP TABLE IF EXISTS itineraries_partitions_3 CASCADE;
 
-CREATE TABLE itineraries_partitions_1 (LIKE itineraries);
-CREATE TABLE itineraries_partitions_2 (LIKE itineraries);
-CREATE TABLE itineraries_partitions_3 (LIKE itineraries);
+CREATE TABLE IF NOT EXISTS itineraries_partitions_1 (LIKE itineraries);
+CREATE TABLE IF NOT EXISTS itineraries_partitions_2 (LIKE itineraries);
+CREATE TABLE IF NOT EXISTS itineraries_partitions_3 (LIKE itineraries);
 
 ALTER TABLE itineraries_partitions_1 ADD CONSTRAINT itineraries_partitions_1_check CHECK (zoo_id = 1);
 ALTER TABLE itineraries_partitions_2 ADD CONSTRAINT itineraries_partitions_2_check CHECK (zoo_id = 2);
@@ -283,7 +283,7 @@ CREATE RULE itineraries_insert_3 AS
     DO INSTEAD INSERT INTO itineraries_partitions_3 VALUES (NEW.*);
 
 -- Crear función del trigger
-DROP FUNCTION IF EXISTS itineraries_insert_trigger;
+DROP FUNCTION IF EXISTS itineraries_insert_trigger CASCADE;
 CREATE OR REPLACE FUNCTION itineraries_insert_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -319,8 +319,8 @@ CREATE TABLE species_additional_info
 );
 
 ALTER TABLE species
-DROP COLUMN caregiver_id,
-DROP COLUMN habitat_id
+DROP COLUMN IF EXISTS caregiver_id,
+DROP COLUMN IF EXISTS habitat_id
 ;
 
 -- Vistas
@@ -332,14 +332,6 @@ CREATE VIEW vw_species AS
 	JOIN caregivers c ON sai.caregiver_id = c.id
 	JOIN habitats h ON sai.habitat_id = h.id
     JOIN zones z ON s.zone_id = z.id;
-;
-
-DROP VIEW IF EXISTS vw_itineraries;
-CREATE VIEW vw_itineraries AS
-    SELECT i.id, g.name AS guide, z.name AS zone, i.duration, i.max_visitors, i.start_time, i.zoo_id
-    FROM itineraries i
-    JOIN guides g ON i.guide_id = g.id
-    JOIN zones z ON i.zone_id = z.id
 ;
 
 -- Transaccionalidad (cuidador y especie)

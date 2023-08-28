@@ -13,7 +13,7 @@ CREATE PUBLICATION uio_publication FOR ALL TABLES;
 
 -- GYE
 CREATE SUBSCRIPTION gye_subscription
-CONNECTION 'host=containers-us-west-131.railway.app port=6755 user=postgres password=xV1GLoIWcb5FPMAvOD7u dbname=railway'
+CONNECTION 'host=containers-us-west-210.railway.app port=7982 user=postgres password=bxqHUWVDmGkKOwQyzfzP dbname=railway'
 PUBLICATION uio_publication;
 
 --ALTER SUBSCRIPTION gdb_subscription RENAME TO gye_subscription;
@@ -21,11 +21,8 @@ PUBLICATION uio_publication;
 
 -- CUEN
 CREATE SUBSCRIPTION cuen_subscription
-CONNECTION 'host=containers-us-west-131.railway.app port=6755 user=postgres password=xV1GLoIWcb5FPMAvOD7u dbname=railway'
+CONNECTION 'host=containers-us-west-210.railway.app port=7982 user=postgres password=bxqHUWVDmGkKOwQyzfzP dbname=railway'
 PUBLICATION uio_publication;
 
 --ALTER SUBSCRIPTION cuen_subscription SET PUBLICATION uio_publication;
 
--- Prueba
-INSERT INTO users(zoo_id, name, email, email_verified_at, password)
-	VALUES (1, 'Prueba', 'prueba@zoo.com', '2023-08-27 03:07:44', '$2y$10$xwp62Xc2ivY6GGi1qWE9fuBsRTIjH0id6bNYi8Yo7jS1XDrQe6Eo.');
