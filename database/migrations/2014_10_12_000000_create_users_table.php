@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->integer('zoo_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('zoo_id')->references('id')->on('zoos')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
