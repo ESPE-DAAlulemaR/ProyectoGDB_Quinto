@@ -53,7 +53,8 @@
                                         <td>{{ $specie->zone }}</td>
                                         <td>
                                             <div class="d-flex justify-content-around">
-                                                <a href="{{ route('species.edit', ['species' => $specie->id]) }}"
+                                                <span>...</span>
+                                                {{--<a href="{{ route('species.edit', ['species' => $specie->id]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
@@ -62,7 +63,7 @@
                                                     <button type="submit" class="btn btn-danger btn-sm">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-                                                {!! Form::close() !!}
+                                                {!! Form::close() !!}--}}
                                             </div>
                                         </td>
                                     </tr>
